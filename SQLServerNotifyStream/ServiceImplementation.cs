@@ -31,6 +31,7 @@ namespace SQLServerNotifyStream
         {
             //For debug, create a file when service starts
             System.IO.File.Create(AppDomain.CurrentDomain.BaseDirectory + "OnStart.txt");
+            SQLServerStream listener = new SQLServerStream();
         }
 
         /// <summary>

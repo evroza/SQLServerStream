@@ -15,8 +15,56 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_026FD1F95F8BC38E57B2FC28D117E6A4"
+        "OwnerKey" = "8:_05394F9111A947C795CB5B98022EE13D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_026FD1F95F8BC38E57B2FC28D117E6A4"
+        "OwnerKey" = "8:_B64B4850346347628975153950233CC4"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_05394F9111A947C795CB5B98022EE13D"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_133A48741256A8D91DD5E2C0F17D25AA"
+        "OwnerKey" = "8:_05394F9111A947C795CB5B98022EE13D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_133A48741256A8D91DD5E2C0F17D25AA"
+        "OwnerKey" = "8:_B64B4850346347628975153950233CC4"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4837F86FE26645D7E7B668F00F675331"
+        "OwnerKey" = "8:_05394F9111A947C795CB5B98022EE13D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4837F86FE26645D7E7B668F00F675331"
+        "OwnerKey" = "8:_B64B4850346347628975153950233CC4"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4837F86FE26645D7E7B668F00F675331"
+        "OwnerKey" = "8:_133A48741256A8D91DD5E2C0F17D25AA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4837F86FE26645D7E7B668F00F675331"
+        "OwnerKey" = "8:_026FD1F95F8BC38E57B2FC28D117E6A4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -29,6 +77,24 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_05394F9111A947C795CB5B98022EE13D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_133A48741256A8D91DD5E2C0F17D25AA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_026FD1F95F8BC38E57B2FC28D117E6A4"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_4837F86FE26645D7E7B668F00F675331"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -152,6 +218,99 @@
         }
         "File"
         {
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_026FD1F95F8BC38E57B2FC28D117E6A4"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:TableDependency.SqlClient, Version=7.5.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_026FD1F95F8BC38E57B2FC28D117E6A4"
+                    {
+                    "Name" = "8:TableDependency.SqlClient.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:TableDependency.SqlClient.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_6986F2148E344AA7A3CF3656BD4E0BDD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_133A48741256A8D91DD5E2C0F17D25AA"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:TableDependency.SqlClient.Where, Version=7.5.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_133A48741256A8D91DD5E2C0F17D25AA"
+                    {
+                    "Name" = "8:TableDependency.SqlClient.Where.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:TableDependency.SqlClient.Where.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_6986F2148E344AA7A3CF3656BD4E0BDD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4837F86FE26645D7E7B668F00F675331"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:TableDependency, Version=7.5.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_4837F86FE26645D7E7B668F00F675331"
+                    {
+                    "Name" = "8:TableDependency.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:TableDependency.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_6986F2148E344AA7A3CF3656BD4E0BDD"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -209,7 +368,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:SQL Server Notify Stream"
         "ProductCode" = "8:{22494857-0CF8-4EEF-AD75-96B919497A47}"
-        "PackageCode" = "8:{A0D70EA3-2F65-4968-9280-E03BB0FCEBD1}"
+        "PackageCode" = "8:{B1FE1958-F494-4A28-B754-FDFD8B12BED4}"
         "UpgradeCode" = "8:{7A07CBE3-5A3D-40C3-BE3A-085C4F79F663}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -217,7 +376,7 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:DevQL"
+        "Manufacturer" = "8:DevQLe"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
         "Title" = "8:SQL Server Notify Stream"

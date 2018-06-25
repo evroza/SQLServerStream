@@ -40,7 +40,7 @@ namespace SQLServerNotifyStream
             // 
             // serviceInstaller1
             // 
-            this.serviceInstaller1.ServiceName = "SQL Server Notify Stream Service";
+            this.serviceInstaller1.ServiceName = "SQL Server Notifyyy Stream Service";
             this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             this.serviceInstaller1.AfterInstall += new System.Configuration.Install.InstallEventHandler(this.serviceInstaller1_AfterInstall);
             this.serviceInstaller1.BeforeUninstall += new System.Configuration.Install.InstallEventHandler(this.serviceInstaller1_BeforeUninstall);
