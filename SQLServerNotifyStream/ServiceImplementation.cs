@@ -1,4 +1,5 @@
 ﻿using SQLServerNotifyStream.Framework;
+using System;
 using System.ServiceProcess;
 
 
@@ -28,6 +29,8 @@ namespace SQLServerNotifyStream
         /// <param name="args">Any command line arguments</param>
         public void OnStart(string[] args)
         {
+            //For debug, create a file when service starts
+            System.IO.File.Create(AppDomain.CurrentDomain.BaseDirectory + "OnStart.txt");
         }
 
         /// <summary>
@@ -35,6 +38,8 @@ namespace SQLServerNotifyStream
         /// </summary>
         public void OnStop()
         {
+            //For debug, create a file when service stops
+            System.IO.File.Create(AppDomain.CurrentDomain.BaseDirectory + "OnStart.txt");
         }
 
         /// <summary>
