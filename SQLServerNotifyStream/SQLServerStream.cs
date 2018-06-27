@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Http;
 using TableDependency;
 using TableDependency.SqlClient;
 using TableDependency.EventArgs;
+using Newtonsoft.Json;
 
 namespace SQLServerNotifyStream
 {
     class SQLServerStream
     {
         private static string _con = "data source=.; initial catalog=yanguTest; integrated security=True";
+        
 
         // The constructor initializes the database connections and adds column mappings if any
         public SQLServerStream()
@@ -44,6 +47,48 @@ namespace SQLServerNotifyStream
             Console.WriteLine("Created at: " + changedEntity.Created_at);
             Console.WriteLine("Quantity Ordered: " + changedEntity.qty_ordered);
             Console.WriteLine("Price: " + changedEntity.price);
+
+            if (e.ChangeType == TableDependency.Enums.ChangeType.Insert) {
+                //DML operation of type insert, push this entry to logging server
+                Login(null);
+            }
+        }
+
+        // Properly packages the DML data so that it can be transmitted to receiving server
+        // Creates the proper post payload
+        // changedEntity -- The inserted Record as recieved
+        public static void PackagePayload(object changedEntity)
+        {
+
+        }
+
+        public static async Task Login(object loginData)
+        {
+            var values = new Dictionary<string, string>
+            {
+               { "username", "mimizaana" },
+               { "password", "wewe" }
+            };
+
+            var content = new FormUrlEncodedContent(values);
+
+            var response = await Globals.Client.PostAsync("http://localhost:3000/login", content);
+
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            LoginResponseJSON payload = JsonConvert.DeserializeObject<LoginResponseJSON>(responseString);
+
+            if (payload.status.Equals("success")) {
+                //
+            }
+
+        }
+
+        // Takes the properly packaged payload returned from the PackagePayload method and trasmits it to receiving server
+        public static void Transmit(object payload)
+        {
+            
+
         }
     }
 }
