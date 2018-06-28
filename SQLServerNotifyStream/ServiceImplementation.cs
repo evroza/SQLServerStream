@@ -10,7 +10,7 @@ namespace SQLServerNotifyStream
     /// </summary>
     [WindowsService("SQLServerNotifyStream",
         DisplayName = "SQLServerNotifyStream",
-        Description = "The description of the SQLServerNotifyStream service.",
+        Description = "SQLServerNotifyStream service listens for DB table inserts and posts the changed record to a web API",
         EventLogSource = "SQLServerNotifyStream",
         StartMode = ServiceStartMode.Automatic)]
     public class ServiceImplementation : IWindowsService
@@ -27,13 +27,18 @@ namespace SQLServerNotifyStream
         /// This method is called when the service gets a request to start.
         /// </summary>
         /// <param name="args">Any command line arguments</param>
-        public void OnStart(string[] args)
+        public async void OnStart(string[] args)
         {
             //For debug, create a file when service starts
             System.IO.File.Create(AppDomain.CurrentDomain.BaseDirectory + "OnStart.txt");
-            SQLServerStream listener = new SQLServerStream();
-        }
+            // Login on every service start - to renew token if expired
+            // MUST perform login before ANYTHING else, otherwise the login might not be called if other event listeners are invoked
+            await SQLServerStream.LoginAsync(Globals.WebServerAddress, Globals.WebServerUsername, Globals.WebServerPassword);
 
+            SQLServerStream listener = new SQLServerStream();
+                      
+        }
+    
         /// <summary>
         /// This method is called when the service gets a request to stop.
         /// </summary>

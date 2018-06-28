@@ -13,9 +13,7 @@ namespace SQLServerNotifyStream
 {
     class SQLServerStream
     {
-        private static string _con = "data source=.; initial catalog=yanguTest; integrated security=True";
         
-
         // The constructor initializes the database connections and adds column mappings if any
         public SQLServerStream()
         {
@@ -26,7 +24,7 @@ namespace SQLServerNotifyStream
                 mapper.AddMapping(c => c.Name, "First Name");
             **/
 
-            using (var dep = new SqlTableDependency<ModelOrderProducts>(_con, tableName: "order_products"))
+            using (var dep = new SqlTableDependency<ModelOrderProducts>(Globals.DBConnectionString, Globals.DBTableName))
             {
                 dep.OnChanged += Changed;
                 dep.Start();
@@ -38,7 +36,7 @@ namespace SQLServerNotifyStream
             }
         }
 
-        public static void Changed(object sender, RecordChangedEventArgs<ModelOrderProducts> e)
+        public static async void Changed(object sender, RecordChangedEventArgs<ModelOrderProducts> e)
         {
             var changedEntity = e.Entity;
 
@@ -50,7 +48,15 @@ namespace SQLServerNotifyStream
 
             if (e.ChangeType == TableDependency.Enums.ChangeType.Insert) {
                 //DML operation of type insert, push this entry to logging server
-                Login(null);
+                await RecordHandler.TransmitAsync(e);
+                try {
+
+                }
+                catch (HttpRequestException ex)
+                {
+                    Console.WriteLine("A HTTP connection error was encountered, record will be logged to file ...");
+                    RecordHandler.LogFailed("");
+                }
             }
         }
 
@@ -62,25 +68,10 @@ namespace SQLServerNotifyStream
 
         }
 
-        public static async Task Login(object loginData)
+        public static async Task LoginAsync(string WebServerAddress, string WebServerUsername, string WebServerPassword)
         {
-            var values = new Dictionary<string, string>
-            {
-               { "username", "mimizaana" },
-               { "password", "wewe" }
-            };
-
-            var content = new FormUrlEncodedContent(values);
-
-            var response = await Globals.Client.PostAsync("http://localhost:3000/login", content);
-
-            var responseString = await response.Content.ReadAsStringAsync();
-
-            LoginResponseJSON payload = JsonConvert.DeserializeObject<LoginResponseJSON>(responseString);
-
-            if (payload.status.Equals("success")) {
-                //
-            }
+            
+            await RecordHandler.LoginAsync(WebServerAddress, WebServerUsername, WebServerPassword);
 
         }
 
