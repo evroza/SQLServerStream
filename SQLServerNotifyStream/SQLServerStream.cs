@@ -8,6 +8,7 @@ using TableDependency;
 using TableDependency.SqlClient;
 using TableDependency.EventArgs;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SQLServerNotifyStream
 {
@@ -47,15 +48,23 @@ namespace SQLServerNotifyStream
             Console.WriteLine("Price: " + changedEntity.price);
 
             if (e.ChangeType == TableDependency.Enums.ChangeType.Insert) {
-                //DML operation of type insert, push this entry to logging server
-                await RecordHandler.TransmitAsync(e);
+                //DML operation of type insert, try push this entry to logging server
                 try {
-
+                    await RecordHandler.TransmitAsync(e);
                 }
                 catch (HttpRequestException ex)
                 {
-                    Console.WriteLine("A HTTP connection error was encountered, record will be logged to file ...");
-                    RecordHandler.LogFailed("");
+                    Console.WriteLine("A HTTP connection error was encountered, could be because of Web Server being down/unreachable");
+
+                    dynamic record = new JObject();
+                    record.dataset = new JObject();
+                    record.dataset.ItemID = changedEntity.itemid;
+                    record.dataset.CreatedAt = changedEntity.Created_at;
+                    record.dataset.QuantityOrdered = changedEntity.qty_ordered;
+                    record.dataset.Price = changedEntity.price;
+
+                    // Log current record to File system, it was never trasmitted in the first place due to connection issues
+                    RecordHandler.LogFailed(record.ToString());
                 }
             }
         }

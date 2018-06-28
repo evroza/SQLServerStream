@@ -97,6 +97,8 @@ namespace SQLServerNotifyStream
                 return true;
             } else
             {
+                // First check the error message, if it is because the token is invalid, renew it and resend, otherwise, log it to file
+
                 // If function still executing then transmit was unsuccesful, log it locally for later transmission
                 LogFailed(record.ToString());
 
@@ -132,23 +134,20 @@ namespace SQLServerNotifyStream
         public static void LogFailed(string record)
         {
             // This function logs failed transmissions to local file system. They will be retrasmitted later when token is valid again
-            String timeStamp = DateTime.Now.ToString();
-            string fileName = timeStamp + ".txt";
+            Int32 timeStamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            string fileName = $"{timeStamp}.txt";
             string path = AppDomain.CurrentDomain.BaseDirectory + fileName;
 
             try
-            {
-                
+            {          
                 
                 // Next write the dataset to the just created file
                 if (!File.Exists(path))
                 {
                     // try creating a new file on local system and write to it the dataset that failed to transmit
                     // file name should be the current timestamp
-                    System.IO.File.Create(path);
 
-                    // File was created. Append dataset to it
-                    using (StreamWriter sw = File.AppendText(path))
+                    using (StreamWriter sw = File.CreateText(path))
                     {
                         sw.WriteLine(record);
                     }
@@ -160,7 +159,7 @@ namespace SQLServerNotifyStream
             catch (Exception e)
             {
 
-                throw;
+                Console.WriteLine(e.Message);
             }
         }
 
