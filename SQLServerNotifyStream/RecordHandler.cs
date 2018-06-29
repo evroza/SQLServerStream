@@ -199,7 +199,19 @@ namespace SQLServerNotifyStream
     
         }
 
-            public static async Task<bool> RetransmitFailedLocalAsync()
+        public static async Task RetransmitFailedAsync()
+        {
+            // Does retransmition in this order:
+            // 1 -- Retransmit locally logged datasets
+            // 2 -- Retransmit DB datasets that may have not been trasnmitted and not logged to file system
+            
+            // First ...
+            await RetransmitFailedLocalAsync();
+            // Then ...
+            await RetransmitFailedDBAsync();
+        }
+
+        public static async Task<bool> RetransmitFailedLocalAsync()
         {
             // Whenever the Web server token is updated, this function is called to check whether there are any 
             // failed trasmissions and retries trasmitting them again - on success, the local logged file is deleted

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Timers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,10 @@ namespace SQLServerNotifyStream
 {
     class SQLServerStream
     {
-        
+
+        private static System.Timers.Timer aTimer;
+        private static int  counter = 1; // For debug to check whether the interval is running
+
         // The constructor initializes the database connections and adds column mappings if any
         public SQLServerStream()
         {
@@ -33,6 +37,7 @@ namespace SQLServerNotifyStream
                 Console.WriteLine("Press a key to exit");
                 Console.ReadKey();
 
+                
                 dep.Stop();
             }
         }
@@ -81,26 +86,36 @@ namespace SQLServerNotifyStream
             }
         }
 
-        // Properly packages the DML data so that it can be transmitted to receiving server
-        // Creates the proper post payload
-        // changedEntity -- The inserted Record as recieved
-        public static void PackagePayload(object changedEntity)
+        public static void StartRetransmitIntervals()
         {
+            // Next can initiate the timer interval for retransmision of local and DB datasets
+            aTimer = new System.Timers.Timer(10000);
+            aTimer.Elapsed += new ElapsedEventHandler(TimerElapsed);
+            aTimer.Interval = 2000;
+            aTimer.Enabled = true;
+        }
+
+        public static void TimerElapsed(object source, ElapsedEventArgs e)
+        {
+            // This method invokes the Local file retransmit function FIRST, THEN invokes the db retransmit method
+            // Don't need to await this, it can happen any time after, I just need it to be executed at some point
+            RecordHandler.RetransmitFailedAsync();
+
+            Console.WriteLine($"Timer Interval invoked at: {e.SignalTime}; Invoked: {counter}");
+            SQLServerStream.counter++;
+
+
 
         }
 
-        public static async Task LoginAsync(string WebServerAddress, string WebServerUsername, string WebServerPassword)
+
+
+            public static async Task LoginAsync(string WebServerAddress, string WebServerUsername, string WebServerPassword)
         {
             
             await RecordHandler.LoginAsync(WebServerAddress, WebServerUsername, WebServerPassword);
 
         }
-
-        // Takes the properly packaged payload returned from the PackagePayload method and trasmits it to receiving server
-        public static void Transmit(object payload)
-        {
-            
-
-        }
+        
     }
 }

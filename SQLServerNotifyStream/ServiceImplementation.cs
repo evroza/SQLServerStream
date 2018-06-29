@@ -34,8 +34,10 @@ namespace SQLServerNotifyStream
             // Login on every service start - to renew token if expired
             // MUST perform login before ANYTHING else, otherwise the login might not be called if other event listeners are invoked
             await SQLServerStream.LoginAsync(Globals.WebServerAddress, Globals.WebServerUsername, Globals.WebServerPassword);
+            SQLServerStream.StartRetransmitIntervals();
 
             SQLServerStream listener = new SQLServerStream();
+            
                       
         }
     
