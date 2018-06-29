@@ -35,6 +35,8 @@ namespace SQLServerNotifyStream
         public static readonly string DBConnectionString = "data source=.; initial catalog=yanguTest; integrated security=True";
         public static readonly string DBTableName = "order_products";
 
+        public static readonly string LogFolder = "FailedTransmits";
+
 
         public static bool IsTokenInvalid()
         {

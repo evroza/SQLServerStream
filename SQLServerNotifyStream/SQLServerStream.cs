@@ -46,15 +46,27 @@ namespace SQLServerNotifyStream
             Console.WriteLine("Created at: " + changedEntity.Created_at);
             Console.WriteLine("Quantity Ordered: " + changedEntity.qty_ordered);
             Console.WriteLine("Price: " + changedEntity.price);
-
+            RecordHandler.RetransmitFailedLocalAsync(); // Debug only, delete it from here when done
             if (e.ChangeType == TableDependency.Enums.ChangeType.Insert) {
                 //DML operation of type insert, try push this entry to logging server
                 try {
-                    await RecordHandler.TransmitAsync(e);
+                    bool transmitStatus = await RecordHandler.TransmitAsync(e);
+
+                    if (transmitStatus)
+                    {
+                        Console.WriteLine($"Record ID:  {changedEntity.itemid} successfully transmitted");
+                    } else
+                    {
+                        Console.WriteLine($"FAILED: Record {changedEntity.itemid} transmition failed! It has been logged to file system for later transmittion");
+                    }
+
                 }
                 catch (HttpRequestException ex)
                 {
                     Console.WriteLine("A HTTP connection error was encountered, could be because of Web Server being down/unreachable");
+                    Console.WriteLine($"FAILED: Record {changedEntity.itemid} transmition failed! It has been logged to file system for later transmittion");
+
+                    await RecordHandler.RetransmitFailedDBAsync(); // This statement is only for debug must be DELETED when done debugging!
 
                     dynamic record = new JObject();
                     record.dataset = new JObject();

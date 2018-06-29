@@ -86,9 +86,11 @@
     <Compile Include="Framework\WindowsServiceInstaller.Designer.cs">
       <DependentUpon>WindowsServiceInstaller.cs</DependentUpon>
     </Compile>
-    <Compile Include="APIResponses\LoginResponseJSON.cs" />
+    <Compile Include="JSONConvert\GenericRecordJSON.cs" />
+    <Compile Include="JSONConvert\GenericDatasetJSON.cs" />
+    <Compile Include="JSONConvert\LoginResponseJSON.cs" />
     <Compile Include="Globals.cs" />
-    <Compile Include="APIResponses\GenericResponseJSON.cs" />
+    <Compile Include="JSONConvert\GenericResponseJSON.cs" />
     <Compile Include="ModelOrderProducts.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">

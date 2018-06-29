@@ -45,7 +45,8 @@ namespace SQLServerNotifyStream
         public void OnStop()
         {
             //For debug, create a file when service stops
-            System.IO.File.Create(AppDomain.CurrentDomain.BaseDirectory + "OnStart.txt");
+            System.IO.File.Create(AppDomain.CurrentDomain.BaseDirectory + "OnStop.txt");
+            // TODO: Can initiate a logout call, but not necessary
         }
 
         /// <summary>
