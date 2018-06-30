@@ -2,7 +2,7 @@
 A Windows Service to listen for table changes on SQL Server and transmit to a listening Web server. Includes local logging
 
 
-## Version 1.00 Release
+## Version 1.10 Production Release
 
 Features:
 - Listen for inserts to SQL Server table
