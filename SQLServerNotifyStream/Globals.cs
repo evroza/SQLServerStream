@@ -32,10 +32,13 @@ namespace SQLServerNotifyStream
         //password used to login to Web server
         public static readonly string WebServerPassword = "wewe";
 
-        public static readonly string DBConnectionString = "data source=.; initial catalog=yanguTest; integrated security=True";
-        public static readonly string DBTableName = "order_products";
+        public static readonly string DBConnectionString = "Server=172.16.204.100\\THREESHAPEDENTAL;Database=DentalManager;User Id=sa;Password=3SDMdbmspw;"; // no need to use app config vars for now
+        public static readonly string DBTableName = "tbl_processedHistory";
 
         public static readonly string LogFolder = "FailedTransmits";
+
+        // Retransmit interval of failed transmits set to 30 minutes i.e 60*30 (seconds)
+        public static readonly int FailedRetransmitInterval = 108000;
 
 
         public static bool IsTokenInvalid()

@@ -89,9 +89,8 @@ namespace SQLServerNotifyStream
         public static void StartRetransmitIntervals()
         {
             // Next can initiate the timer interval for retransmision of local and DB datasets
-            aTimer = new System.Timers.Timer(10000);
+            aTimer = new System.Timers.Timer(Globals.FailedRetransmitInterval);
             aTimer.Elapsed += new ElapsedEventHandler(TimerElapsed);
-            aTimer.Interval = 2000;
             aTimer.Enabled = true;
         }
 
@@ -101,7 +100,7 @@ namespace SQLServerNotifyStream
             // Don't need to await this, it can happen any time after, I just need it to be executed at some point
             RecordHandler.RetransmitFailedAsync();
 
-            Console.WriteLine($"Timer Interval invoked at: {e.SignalTime}; Invoked: {counter}");
+            Console.WriteLine($"Retransmit Interval invoked at: {e.SignalTime}; Invoked: ({counter}) times since Service start.");
             SQLServerStream.counter++;
 
 
