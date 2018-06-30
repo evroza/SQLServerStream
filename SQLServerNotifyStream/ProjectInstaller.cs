@@ -24,15 +24,15 @@ namespace SQLServerNotifyStream
 
         // Checks whether the service is running - if so then stop it first before proceeding with uninstall
         private void serviceInstaller1_BeforeUninstall(object sender, InstallEventArgs e)
-        {
+        {/*
             ServiceController sc = new ServiceController(serviceInstaller1.ServiceName);
 
             if ((sc.Status.Equals(ServiceControllerStatus.Stopped)) ||
                  (sc.Status.Equals(ServiceControllerStatus.StopPending)))
             {
-                // Start the service if the current status is stopped.
+                // Stop the service if the current status is not Stopped.
                 sc.Stop();
-            }
+            }*/
 
         }
     }

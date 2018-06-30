@@ -1,5 +1,6 @@
 ﻿using SQLServerNotifyStream.Framework;
 using System;
+using System.IO;
 using System.ServiceProcess;
 
 
@@ -31,16 +32,56 @@ namespace SQLServerNotifyStream
         {
             //For debug, create a file when service starts
             System.IO.File.Create(AppDomain.CurrentDomain.BaseDirectory + "OnStart.txt");
-            // Login on every service start - to renew token if expired
-            // MUST perform login before ANYTHING else, otherwise the login might not be called if other event listeners are invoked
-            await SQLServerStream.LoginAsync(Globals.WebServerAddress, Globals.WebServerUsername, Globals.WebServerPassword);
-            SQLServerStream.StartRetransmitIntervals();
+            //AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-            SQLServerStream listener = new SQLServerStream();
+            try
+            {
+
+                // Create the 
+                //First create the Globals.LogFolder and Globals.ErrorLogFolder if it don't exist:
+                System.IO.Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + Globals.ErrorLogFolder); // Catch-all error log folder
+                System.IO.Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + Globals.LogFolder); //Failed transmits folder
+
+                // Login on every service start - to renew token if expired
+                // MUST perform login before ANYTHING else, otherwise the login might not be called if other event listeners are invoked
+                await SQLServerStream.LoginAsync(Globals.WebServerAddress, Globals.WebServerUsername, Globals.WebServerPassword);
+                SQLServerStream.StartRetransmitIntervals();
+
+                SQLServerStream listener = new SQLServerStream();
+            }
+            catch (Exception e)
+            {
+
+                // This function logs failed transmissions to local file system. They will be retrasmitted later when token is valid again
+                Int32 timeStamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                string fileName = $"{timeStamp}_UnhandledExeption.log";
+                string logFolder = Globals.ErrorLogFolder;
+                string path = AppDomain.CurrentDomain.BaseDirectory + logFolder + "/" + fileName;
+
+                try
+                {
+                    Console.WriteLine("Unhandlable error : " + e.Message);
+                    
+                    // Next write the dataset to the just created file
+                    File.WriteAllText(path, "Unhandlable error : " + e.Message);
+                    File.AppendAllText(path, e.StackTrace.ToString());
+                    Environment.Exit(10);
+                }
+                catch (Exception err)
+                {
+
+                    Console.WriteLine(err.Message);
+
+                    // Try writing the new thrown exeption to current base directory as last resort
+                    File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + fileName, "Error Logging unhandled error : " + e.Message);
+                }
+            }
+            
             
                       
         }
-    
+
+        
         /// <summary>
         /// This method is called when the service gets a request to stop.
         /// </summary>

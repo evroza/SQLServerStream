@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.ServiceProcess;
 using SQLServerNotifyStream.Framework;
@@ -46,7 +47,10 @@ namespace SQLServerNotifyStream
             catch (Exception ex)
             {
                 ConsoleHarness.WriteToConsole(ConsoleColor.Red, "An exception occurred in Main(): {0}", ex);
+               
             }
         }
+
+        
     }
 }

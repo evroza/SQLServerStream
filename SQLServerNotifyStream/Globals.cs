@@ -33,9 +33,14 @@ namespace SQLServerNotifyStream
         public static readonly string WebServerPassword = "wewe";
 
         public static readonly string DBConnectionString = "Server=172.16.204.100\\THREESHAPEDENTAL;Database=DentalManager;User Id=sa;Password=3SDMdbmspw;"; // no need to use app config vars for now
+        // For local debugging, swap with top statement for production
+        //public static readonly string DBConnectionString = "data source=.; initial catalog=yanguTest; integrated security=True"; // no need to use app config vars for now
         public static readonly string DBTableName = "tbl_processedHistory";
+        // For local debugging, swap with top statement for production
+        //public static readonly string DBTableName = "yanguTest"; // 
 
-        public static readonly string LogFolder = "FailedTransmits";
+        public static readonly string LogFolder = "FailedTransmits"; 
+        public static readonly string ErrorLogFolder = "CrashLogs"; 
 
         // Retransmit interval of failed transmits set to 30 minutes i.e 60*30 (seconds)
         public static readonly int FailedRetransmitInterval = 108000;
