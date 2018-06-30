@@ -10,6 +10,7 @@ using TableDependency.SqlClient;
 using TableDependency.EventArgs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SQLServerNotifyStream.JSONConvert;
 
 namespace SQLServerNotifyStream
 {
@@ -29,7 +30,7 @@ namespace SQLServerNotifyStream
                 mapper.AddMapping(c => c.Name, "First Name");
             **/
 
-            using (var dep = new SqlTableDependency<ModelOrderProducts>(Globals.DBConnectionString, Globals.DBTableName))
+            using (var dep = new SqlTableDependency<ModelProcessedHistory>(Globals.DBConnectionString, Globals.DBTableName))
             {
                 dep.OnChanged += Changed;
                 dep.Start();
@@ -42,16 +43,16 @@ namespace SQLServerNotifyStream
             }
         }
 
-        public static async void Changed(object sender, RecordChangedEventArgs<ModelOrderProducts> e)
+        public static async void Changed(object sender, RecordChangedEventArgs<ModelProcessedHistory> e)
         {
             var changedEntity = e.Entity;
 
             Console.WriteLine("DML operation: " + e.ChangeType);
-            Console.WriteLine("Item ID: " + changedEntity.itemid);
-            Console.WriteLine("Created at: " + changedEntity.Created_at);
-            Console.WriteLine("Quantity Ordered: " + changedEntity.qty_ordered);
-            Console.WriteLine("Price: " + changedEntity.price);
-            RecordHandler.RetransmitFailedLocalAsync(); // Debug only, delete it from here when done
+            Console.WriteLine("Item ID: " + changedEntity.HistoryID);
+            Console.WriteLine("ModelElementID: " + changedEntity.ModelElementID);
+            Console.WriteLine("ModelJobID: " + changedEntity.ModelJobID);
+            Console.WriteLine("OrderID: " + changedEntity.OrderID);
+            //RecordHandler.RetransmitFailedLocalAsync(); // Debug only, delete it from here when done
             if (e.ChangeType == TableDependency.Enums.ChangeType.Insert) {
                 //DML operation of type insert, try push this entry to logging server
                 try {
@@ -59,26 +60,21 @@ namespace SQLServerNotifyStream
 
                     if (transmitStatus)
                     {
-                        Console.WriteLine($"Record ID:  {changedEntity.itemid} successfully transmitted");
+                        Console.WriteLine($"Record ID:  {changedEntity.HistoryID} successfully transmitted");
                     } else
                     {
-                        Console.WriteLine($"FAILED: Record {changedEntity.itemid} transmition failed! It has been logged to file system for later transmittion");
+                        Console.WriteLine($"FAILED: Record {changedEntity.HistoryID} transmition failed! It has been logged to file system for later transmittion");
                     }
 
                 }
                 catch (HttpRequestException ex)
                 {
                     Console.WriteLine("A HTTP connection error was encountered, could be because of Web Server being down/unreachable");
-                    Console.WriteLine($"FAILED: Record {changedEntity.itemid} transmition failed! It has been logged to file system for later transmittion");
+                    Console.WriteLine($"FAILED: Record {changedEntity.HistoryID} transmition failed! It has been logged to file system for later transmittion");
 
                     await RecordHandler.RetransmitFailedDBAsync(); // This statement is only for debug must be DELETED when done debugging!
 
-                    dynamic record = new JObject();
-                    record.dataset = new JObject();
-                    record.dataset.ItemID = changedEntity.itemid;
-                    record.dataset.CreatedAt = changedEntity.Created_at;
-                    record.dataset.QuantityOrdered = changedEntity.qty_ordered;
-                    record.dataset.Price = changedEntity.price;
+                    dynamic record = JSONConverter.EntityToJObject(e);
 
                     // Log current record to File system, it was never trasmitted in the first place due to connection issues
                     RecordHandler.LogFailed(record.ToString());

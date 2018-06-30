@@ -12,6 +12,7 @@ using TableDependency.EventArgs;
 using System.Data.SqlClient;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using SQLServerNotifyStream.JSONConvert;
 
 namespace SQLServerNotifyStream
 {
@@ -64,24 +65,21 @@ namespace SQLServerNotifyStream
             return Globals.Token;
         }
 
-        public static async Task<bool> TransmitAsync(RecordChangedEventArgs<ModelOrderProducts> e)
+        public static async Task<bool> TransmitAsync(RecordChangedEventArgs<ModelProcessedHistory> e)
         {
             // return true on successful transmission of a record, false otherwise
 
             var changedEntity = e.Entity;
 
-            dynamic record = new JObject();
-            record.dataset = new JObject();
-            record.dataset.ItemID = changedEntity.itemid;
-            record.dataset.CreatedAt = changedEntity.Created_at;
-            record.dataset.QuantityOrdered = changedEntity.qty_ordered;
-            record.dataset.Price = changedEntity.price;
+            dynamic record = JSONConverter.EntityToJObject(e);
 
             bool transmitStatus =  await TransmitJSONRecordAsync(record.ToString());
             
 
             return transmitStatus;            
         }
+
+        
 
         private static void MarkTransmitted(string recordID)
         {
@@ -90,13 +88,12 @@ namespace SQLServerNotifyStream
             using (SqlConnection connection = new SqlConnection(Globals.DBConnectionString))
             using (SqlCommand command = connection.CreateCommand())
             {
-                command.CommandText = "UPDATE order_products SET Created_at = @cra, qty_ordered = @qty WHERE itemid = @id";
+                command.CommandText = $"UPDATE {Globals.DBTableName} SET AlreadyExported = @exp WHERE HistoryID = @id";
 
 
                 //command.Parameters.AddWithValue("@tbl", Globals.DBTableName);
                 command.Parameters.AddWithValue("@id", recordID); // Mess with this figure to see changes on different records
-                command.Parameters.AddWithValue("@cra", "2013-12-03 00:00:00.000");
-                command.Parameters.AddWithValue("@qty", "11.1111");
+                command.Parameters.AddWithValue("@exp", "1");
 
                 connection.Open();
 
@@ -139,13 +136,7 @@ namespace SQLServerNotifyStream
                 Console.WriteLine(e.Message);
             }
         }
-
-        private static void TransmitAsyncRecursionProxyAsync()
-        {
-            // retries retrasmitting n times, if recursed two times token still invalid, probable poisoning attack, abort and log to file instead
-
-        }
-
+        
         public static async Task<bool> TransmitJSONRecordAsync(string record)
         {
             // Takes a JSON formatted record and transmits it to web server /save endpoint
@@ -171,7 +162,7 @@ namespace SQLServerNotifyStream
             if (payload.status.Equals("success"))
             {
                 // Mark this record as transmitted in db
-                MarkTransmitted("" + changedEntity.dataset.itemid);
+                MarkTransmitted("" + changedEntity.dataset.HistoryID);
 
                 return true;
             }
@@ -290,11 +281,11 @@ namespace SQLServerNotifyStream
             using (SqlConnection connection = new SqlConnection(Globals.DBConnectionString))
             using (SqlCommand command = connection.CreateCommand())
             {
-                command.CommandText = "SELECT * FROM order_products WHERE price = @prc";
+                command.CommandText = $"SELECT * FROM {Globals.DBTableName} WHERE AlreadyExported = @exp";
 
 
                 //command.Parameters.AddWithValue("@tbl", Globals.DBTableName);
-                command.Parameters.AddWithValue("@prc", "2.8800"); // Mess with this figure to see changes on different records
+                command.Parameters.AddWithValue("@exp", "0"); // Mess with this figure to see changes on different records
 
                 connection.Open();
 
@@ -302,13 +293,9 @@ namespace SQLServerNotifyStream
                 {
                     while (reader.Read())
                     {
-                        dynamic record = new JObject();
-                        record.dataset = new JObject();
-                        record.dataset.ItemID = reader["itemid"].ToString();
-                        record.dataset.CreatedAt = reader["Created_at"].ToString();
-                        record.dataset.QuantityOrdered = reader["qty_ordered"].ToString();
-                        record.dataset.Price = reader["price"].ToString();
+                        dynamic record = JSONConverter.SqlDataReaderToJObject(reader);
 
+                        
                         try
                         {
                             // Transmit one by one to web server /save
@@ -316,11 +303,11 @@ namespace SQLServerNotifyStream
 
                             if (transmitStatus)
                             {
-                                Console.WriteLine($"DBTOFILESERVER: Record ID:  {record.dataset.ItemID} successfully transmitted");
+                                Console.WriteLine($"DBTOFILESERVER: Record ID:  {record.dataset.HistoryID} successfully transmitted");
                             }
                             else
                             {
-                                Console.WriteLine($"FAILED:DBTOFILESERVER:  Record {record.dataset.ItemID} transmition failed! It has been logged to file system for later transmittion");
+                                Console.WriteLine($"FAILED:DBTOFILESERVER:  Record {record.dataset.HistoryID} transmition failed! It has been logged to file system for later transmittion");
 
                                 transmitStatusAll = false;
                             }
@@ -328,7 +315,7 @@ namespace SQLServerNotifyStream
                         catch (HttpRequestException ex)
                         {
                             Console.WriteLine("DBTOFILESERVER: A HTTP connection error was encountered, could be because of Web Server being down/unreachable");
-                            Console.WriteLine($"FAILED:DBTOFILESERVER:  Record {record.dataset.ItemID} transmition failed! It has been logged to file system for later transmittion");
+                            Console.WriteLine($"FAILED:DBTOFILESERVER:  Record {record.dataset.HistoryID} transmition failed! It has been logged to file system for later transmittion");
 
                             transmitStatusAll = false;
                             

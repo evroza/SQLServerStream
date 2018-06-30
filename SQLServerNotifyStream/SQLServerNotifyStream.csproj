@@ -88,10 +88,11 @@
     </Compile>
     <Compile Include="JSONConvert\GenericRecordJSON.cs" />
     <Compile Include="JSONConvert\GenericDatasetJSON.cs" />
+    <Compile Include="JSONConvert\JSONConverter.cs" />
     <Compile Include="JSONConvert\LoginResponseJSON.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="JSONConvert\GenericResponseJSON.cs" />
-    <Compile Include="ModelOrderProducts.cs" />
+    <Compile Include="ModelProcessedHistory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
