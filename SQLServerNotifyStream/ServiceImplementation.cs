@@ -38,8 +38,8 @@ namespace SQLServerNotifyStream
             {
 
                 // Create the 
-                //First create the Globals.LogFolder and Globals.ErrorLogFolder if it don't exist:
-                System.IO.Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + Globals.ErrorLogFolder); // Catch-all error log folder
+                //First create the Globals.LogFolder and Globals.CrashLogFolder if it don't exist:
+                System.IO.Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + Globals.CrashLogFolder); // Catch-all error log folder
                 System.IO.Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + Globals.LogFolder); //Failed transmits folder
 
                 // Login on every service start - to renew token if expired
@@ -55,7 +55,7 @@ namespace SQLServerNotifyStream
                 // This function logs failed transmissions to local file system. They will be retrasmitted later when token is valid again
                 Int32 timeStamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
                 string fileName = $"{timeStamp}_UnhandledExeption.log";
-                string logFolder = Globals.ErrorLogFolder;
+                string logFolder = Globals.CrashLogFolder;
                 string path = AppDomain.CurrentDomain.BaseDirectory + logFolder + "/" + fileName;
 
                 try

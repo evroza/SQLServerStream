@@ -36,7 +36,9 @@ namespace SQLServerNotifyStream
                 dep.Start();
 
                 Console.WriteLine("Press a key to exit");
-                //Console.ReadKey();
+#if DEBUG
+                Console.ReadKey();
+#endif
 
                 
                 dep.Stop();
