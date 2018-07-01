@@ -11,6 +11,7 @@ using TableDependency.EventArgs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SQLServerNotifyStream.JSONConvert;
+using System.Threading;
 
 namespace SQLServerNotifyStream
 {
@@ -33,14 +34,25 @@ namespace SQLServerNotifyStream
             using (var dep = new SqlTableDependency<ModelProcessedHistory>(Globals.DBConnectionString, Globals.DBTableName))
             {
                 dep.OnChanged += Changed;
+                dep.OnError += Errored;
                 dep.Start();
 
                 Console.WriteLine("Press a key to exit");
 #if DEBUG
+                // Need to use this in debug mode to read user input keys to either quit, pause or resume service
+                // In other location, the program is kept alive by infite loop if key is not either if Q, P or R
+                // In Progaram.Main(), ConsoleHarness.Run() is called for every input key which in turn determines whether 
+                // the service should (P)ause, (R)esume or (Stop) OR keep running infinitely for any other key that isn't
+                // in this set. Makes the service easy to debug
                 Console.ReadKey();
+#else
+                // We don't really need  Console.ReadKey(); here since the console input isn't important
+                // Just need to put the service in infinite loop waiting for user input thus keeping it alive
+                Thread.Sleep(Timeout.Infinite);
+
 #endif
 
-                
+
                 dep.Stop();
             }
         }
@@ -82,6 +94,12 @@ namespace SQLServerNotifyStream
                     RecordHandler.LogFailed(record.ToString());
                 }
             }
+        }
+
+        public static void Errored(object sender, ErrorEventArgs e)
+        {
+			// TODO: Handle this errors better
+            throw e.Error;
         }
 
         public static void StartRetransmitIntervals()

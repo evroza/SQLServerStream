@@ -61,7 +61,8 @@ namespace SQLServerNotifyStream
                 try
                 {
                     Console.WriteLine("Unhandlable error : " + e.Message);
-                    
+                    Console.Out.Flush();
+
                     // Next write the dataset to the just created file
                     File.WriteAllText(path, "Unhandlable error : " + e.Message);
                     File.AppendAllText(path, e.StackTrace.ToString());
@@ -71,9 +72,11 @@ namespace SQLServerNotifyStream
                 {
 
                     Console.WriteLine(err.Message);
+                    Console.Out.Flush();
 
                     // Try writing the new thrown exeption to current base directory as last resort
                     File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + fileName, "Error Logging unhandled error : " + e.Message);
+                    Environment.Exit(10);
                 }
             }
             
