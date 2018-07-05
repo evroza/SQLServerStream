@@ -50,5 +50,7 @@ namespace SQLServerNotifyStream
         public string CacheColor { get; set; }
         public string ModelElementType { get; set; }
         public string ValidationResult { get; set; }
+        public string UnitsCounted { get; set; }
+        
     }
 }

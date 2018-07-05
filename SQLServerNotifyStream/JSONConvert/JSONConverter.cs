@@ -63,6 +63,7 @@ namespace SQLServerNotifyStream.JSONConvert
             record.dataset.CacheColor = changedEntity.CacheColor;
             record.dataset.ModelElementType = changedEntity.ModelElementType;
             record.dataset.ValidationResult = changedEntity.ValidationResult;
+            record.dataset.UnitsCounted = changedEntity.UnitsCounted;
 
             return record;
 
@@ -116,6 +117,7 @@ namespace SQLServerNotifyStream.JSONConvert
             record.dataset.CacheColor = reader["CacheColor"].ToString();
             record.dataset.ModelElementType = reader["ModelElementType"].ToString();
             record.dataset.ValidationResult = reader["ValidationResult"].ToString();
+            record.dataset.UnitsCounted = reader["UnitsCounted"].ToString();
 
 
             return record;

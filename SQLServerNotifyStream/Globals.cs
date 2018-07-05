@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Configuration;
-
+using System.IO;
 
 namespace SQLServerNotifyStream
 {
@@ -96,6 +96,38 @@ namespace SQLServerNotifyStream
             }
 
             return connectionString;
+        }
+
+
+        public static void LogErrorStopService(string message, Exception e)
+        {
+            // This method logs the given message to the Globals.CrashLogFolder and stops the service
+
+            Int32 timeStamp = (Int32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            string fileName = $"{timeStamp}_FatalErorServiceStop.log";
+            string logFolder = Globals.CrashLogFolder;
+            string path = AppDomain.CurrentDomain.BaseDirectory + logFolder + "/" + fileName;
+
+            try
+            {
+                Console.WriteLine("Unhandlable error : " + e.Message);
+                Console.Out.Flush();
+
+                // Next write the dataset to the just created file
+                File.WriteAllText(path, "Unhandlable error : " + e.Message);
+                File.AppendAllText(path, e.StackTrace.ToString());
+                Environment.Exit(10);
+            }
+            catch (Exception err)
+            {
+
+                Console.WriteLine(err.Message);
+                Console.Out.Flush();
+
+                // Try writing the new thrown exeption to current base directory as last resort
+                File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + fileName, "Error Logging unhandled error : " + e.Message);
+                Environment.Exit(10);
+            }
         }
 
 

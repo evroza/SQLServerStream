@@ -34,7 +34,6 @@ namespace SQLServerNotifyStream
             using (var dep = new SqlTableDependency<ModelProcessedHistory>(Globals.DBConnectionString, Globals.DBTableName))
             {
                 dep.OnChanged += Changed;
-                dep.OnError += Errored;
                 dep.Start();
 
                 Console.WriteLine("Press a key to exit");
@@ -96,11 +95,7 @@ namespace SQLServerNotifyStream
             }
         }
 
-        public static void Errored(object sender, ErrorEventArgs e)
-        {
-			// TODO: Handle this errors better
-            throw e.Error;
-        }
+        
 
         public static void StartRetransmitIntervals()
         {

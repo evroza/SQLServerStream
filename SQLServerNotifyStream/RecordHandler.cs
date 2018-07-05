@@ -51,6 +51,9 @@ namespace SQLServerNotifyStream
                 Globals.InvalidateToken();
                 token = "";
 
+                // If the status is ever 'error' during login, then the service shouldn't continue, there is a credentials
+                // Misconfiguration in the App config file. Log to Error folder
+
                 ConsoleHarness.WriteToConsole(ConsoleColor.Red, "ERROR: Problem logging in to Web Server, Credentials likely invalid. Username: {0}, Password: {1}", Globals.WebServerUsername, Globals.WebServerPassword);
             }
 
