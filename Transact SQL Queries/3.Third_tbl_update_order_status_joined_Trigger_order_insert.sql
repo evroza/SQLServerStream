@@ -1,9 +1,9 @@
 USE [Dentalmanager]
 GO
  
- /* Triggers for update: */
+ /* Triggers for Update: */
  
-Create TRIGGER [dbo].[tr_insert_order_status_joined] ON [dbo].[ModelElement]
+Create TRIGGER [dbo].[tr_update_order_status_joined] ON [dbo].[ModelElement]
 FOR UPDATE 
 AS
 BEGIN
@@ -15,7 +15,7 @@ DECLARE @ModelElementID varchar(150), @ModelJobID varchar(150), @MaterialID nvar
       @ColorID varchar(150), @ModelComment varchar(40), @ModelActive bit, @CreateDate datetime, @DeliveryDate datetime, @ShippingDate datetime,
       @ReceiveDate datetime, @WasSent bit, @Items nvarchar(100), @ManufName nvarchar(100), @CAMBlankID nvarchar(100), @CAMBlankBatchID nvarchar(100),
       @CAMJobID nvarchar(100), @CAMJobName nvarchar(100), @CAMErrorDescription nvarchar(100), @ERPItemNo nvarchar(100), @CacheMaterialName nvarchar(100),
-      @AltProcessStatusID varchar(150), @CacheColor nvarchar(100), @ModelElementType varchar(150), @ValidationResult varchar(150)
+      @AltProcessStatusID varchar(150), @CacheColor nvarchar(100), @ModelElementType varchar(150), @ValidationResult varchar(150), @UnitsCounted int
 
 
   SET @ModelElementID = (SELECT ModelElementID FROM inserted)
@@ -58,6 +58,7 @@ DECLARE @ModelElementID varchar(150), @ModelJobID varchar(150), @MaterialID nvar
   SET @CacheColor = (SELECT CacheColor FROM inserted)
   SET @ModelElementType = (SELECT ModelElementType FROM inserted)
   SET @ValidationResult = (SELECT ValidationResult FROM inserted)
+  SET @UnitsCounted = (SELECT COUNT(*) AS UnitsCounted FROM dbo.ToothElement WHERE ModelElementID = @ModelElementID)
 
 
 
@@ -101,7 +102,8 @@ INSERT INTO [dbo].[tbl_processedHistory]
            ,[AltProcessStatusID]
            ,[CacheColor]
            ,[ModelElementType]
-           ,[ValidationResult])
+           ,[ValidationResult]
+           ,UnitsCounted)
      VALUES
            (@ModelElementID, @ModelJobID, @MaterialID, @OrderID,
       @ProcessStatusID, @ProcessLockID, @ManufacturerID, @ManufacturingProcessID,
@@ -110,7 +112,7 @@ INSERT INTO [dbo].[tbl_processedHistory]
       @ColorID, @ModelComment, @ModelActive, @CreateDate, @DeliveryDate, @ShippingDate,
       @ReceiveDate, @WasSent, @Items, @ManufName, @CAMBlankID, @CAMBlankBatchID,
       @CAMJobID, @CAMJobName, @CAMErrorDescription, @ERPItemNo, @CacheMaterialName,
-      @AltProcessStatusID, @CacheColor, @ModelElementType, @ValidationResult)
+      @AltProcessStatusID, @CacheColor, @ModelElementType, @ValidationResult, @UnitsCounted)
 
 END
 

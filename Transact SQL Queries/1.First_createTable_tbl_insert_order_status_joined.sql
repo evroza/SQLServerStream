@@ -56,6 +56,7 @@ CREATE TABLE [dbo].[tbl_processedHistory] (
   [CacheColor] [nvarchar](100) NOT NULL DEFAULT (''),
   [ModelElementType] [varchar](150) NOT NULL DEFAULT ('meIndicationRegular'),
   [ValidationResult] [varchar](150) NOT NULL DEFAULT (''),
+  [UnitsCounted] int NULL,
 
   CONSTRAINT PK_processedHistoryTBL PRIMARY KEY CLUSTERED (HistoryID)
 )
