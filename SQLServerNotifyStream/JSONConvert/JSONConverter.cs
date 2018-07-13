@@ -8,6 +8,7 @@ using TableDependency;
 using TableDependency.SqlClient;
 using TableDependency.EventArgs;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace SQLServerNotifyStream.JSONConvert
 {
@@ -65,6 +66,14 @@ namespace SQLServerNotifyStream.JSONConvert
             record.dataset.ValidationResult = changedEntity.ValidationResult;
             record.dataset.UnitsCounted = changedEntity.UnitsCounted;
 
+            if (record.dataset.UnitsCounted.Equals('0'))
+            {
+                // Reconcile in DB and return null for this record
+                __ValidateUnitsCounted(record.dataset.HistoryID);
+                return null;
+            }
+
+
             return record;
 
         }
@@ -120,9 +129,37 @@ namespace SQLServerNotifyStream.JSONConvert
             record.dataset.UnitsCounted = reader["UnitsCounted"].ToString();
 
 
+            // Need to verify units counted isn't zero -- cannot be zero
+            // Might sometimes be zero because of race condition in table update, so we need to correct this
+
+            if (record.dataset.UnitsCounted.Equals('0'))
+            {
+                // Reconcile in DB and return null for this record
+                __ValidateUnitsCounted(record.dataset.HistoryID);
+                return null;
+            }
+
             return record;
         }
 
+
+        private static void __ValidateUnitsCounted(string historyID)
+        {
+            // Private method to check whether the UnitsCounted Field is 0 in a record processed by this class
+            // If zero, then the record is possibly
+            using (SqlConnection con = new SqlConnection(Globals.DBConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("Proc_reconcileProcessedHistory", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.Add("@HistoryID", SqlDbType.VarChar).Value = historyID;
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
 
     }
 }

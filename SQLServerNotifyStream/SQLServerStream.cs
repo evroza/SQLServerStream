@@ -76,7 +76,9 @@ namespace SQLServerNotifyStream
                         Console.WriteLine($"Record ID:  {changedEntity.HistoryID} successfully transmitted");
                     } else
                     {
-                        Console.WriteLine($"FAILED: Record {changedEntity.HistoryID} transmition failed! It has been logged to file system for later transmittion");
+                        // This section executed if either the transmission failed and record was logged to file OR!
+                        // The UnitsCounted field was had a value Zero causing a reconcillitation action to be performed
+                        Console.WriteLine($"FAILED: Record {changedEntity.HistoryID} transmition failed! Deffered processing");
                     }
 
                 }
@@ -88,6 +90,14 @@ namespace SQLServerNotifyStream
                     await RecordHandler.RetransmitFailedDBAsync(); // This statement is only for debug must be DELETED when done debugging!
 
                     dynamic record = JSONConverter.EntityToJObject(e);
+
+                    // If record is null then return, don't continue processing
+                    if(record == null)
+                    {
+                        return;
+                    }
+                    
+
 
                     // Log current record to File system, it was never trasmitted in the first place due to connection issues
                     RecordHandler.LogFailed(record.ToString());

@@ -76,6 +76,14 @@ namespace SQLServerNotifyStream
 
             dynamic record = JSONConverter.EntityToJObject(e);
 
+            // If record is null then return, don't continue processing
+            if (record == null)
+            {
+                return false;
+            }
+
+            // Here, check the record to ensure teeth isn't zero by mistake
+
             bool transmitStatus =  await TransmitJSONRecordAsync(record.ToString());
             
 
@@ -298,6 +306,14 @@ namespace SQLServerNotifyStream
                     {
                         dynamic record = JSONConverter.SqlDataReaderToJObject(reader);
 
+                        if (record == null)
+                        {
+                            // Current record had an incorrect value for numberCounted - skip it
+                            // In this case, still mark all records as transmitted since nothing really failed,
+                            // just an invalid record which initiated reconciliation, but didn't fail, so 'continue' looping
+                            // skipping the reconcilliated record
+                            continue;
+                        }
                         
                         try
                         {
